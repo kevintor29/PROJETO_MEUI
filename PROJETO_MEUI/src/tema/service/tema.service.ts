@@ -12,13 +12,18 @@ import { Tema } from "../entities/tema.entity";
     ){}
     async findAll(): Promise<Tema[]>{
        return await this.TemaRepository.find({   
+        relations: {
+            postagem: true
+        }
     })
     }
     async findById(id: number): Promise<Tema> {
         let tema = await this.TemaRepository.findOne({
            where:{
             id
-        } 
+        } , relations: {
+            postagem: true
+        }
         })
         if (!tema)
         throw new HttpException(`Tema nao encontrado`,HttpStatus.NOT_FOUND)
@@ -28,15 +33,25 @@ import { Tema } from "../entities/tema.entity";
         return await this.TemaRepository.find({
             where:{
                 categoria: ILike(`%${categoria}%`)
+            }, relations: {
+                postagem: true
             }
         })
     }
     async findByFiltro(filtro: string):Promise<Tema[]>{
-        return await this.TemaRepository.find({
+       
+        let pfiltro= await this.TemaRepository.find({
             where:{
                 filtro: ILike(`%${filtro}%`)
+            }, relations: {
+                postagem: true
             }
         })
+       if(!pfiltro ){
+            throw new HttpException(`filtro nao encontrado`,HttpStatus.NOT_FOUND)
+        }
+       return pfiltro
+         
     }
     async create(tema: Tema):Promise<Tema>{
        return await this.TemaRepository.save(tema)

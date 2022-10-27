@@ -1,5 +1,6 @@
 import { IsNotEmpty, MaxLength } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { PostagemEntity} from "src/postagem/entities/postagem.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name:"tb_tema"})
 export class Tema{
@@ -15,4 +16,7 @@ export class Tema{
     @IsNotEmpty()
     @Column({length: 150})
     filtro: string
+
+    @OneToMany(() => PostagemEntity, (Postagem) => Postagem.tema)
+    postagem: PostagemEntity[]
 }
